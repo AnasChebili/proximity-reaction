@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("start time", String.valueOf(startTime));
                     Log.d("end time", String.valueOf(endTime));
                     Log.d("duration", String.valueOf(duration));
-                    display.setText(String.valueOf(duration));
+                    display.setText(String.format("%.3f",duration));
                     isMeasuring = false;
                 }
             }
