@@ -16,8 +16,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import kotlin.random.FallbackThreadLocalRandom;
-
 public class MainActivity extends AppCompatActivity {
 
     private TextView display;
@@ -46,19 +44,22 @@ public class MainActivity extends AppCompatActivity {
         start = findViewById(R.id.start);
         start.setText("Start");
         start.setOnClickListener(v -> {
-            display.setText("Ready!");
-            start.setText("Again");
-            int randomTimeOut = (int) (Math.random()*5000);
-            Log.d("timeout", String.valueOf(randomTimeOut));
-            new android.os.Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startTime = System.nanoTime();
-                    isMeasuring = true;
-                    display.setText("Now!");
+            if (!isMeasuring) {
+                display.setText("Ready!");
+                start.setText("Again");
+                int randomTimeOut = (int) (Math.random()*5000);
+                Log.d("timeout", String.valueOf(randomTimeOut));
+                new android.os.Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startTime = System.nanoTime();
+                        isMeasuring = true;
+                        display.setText("Now!");
 
-                }
-            }, randomTimeOut);});
+                    }
+                }, randomTimeOut);
+            }
+            });
 
         // Get the SensorManager
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
