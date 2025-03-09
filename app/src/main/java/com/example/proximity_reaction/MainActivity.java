@@ -16,6 +16,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import kotlin.random.FallbackThreadLocalRandom;
+
 public class MainActivity extends AppCompatActivity {
 
     private TextView display;
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private SensorEventListener proximitySensorListener;
     long startTime;
     long endTime;
+    boolean isMeasuring = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +44,19 @@ public class MainActivity extends AppCompatActivity {
 
         display = findViewById(R.id.display);
         start = findViewById(R.id.start);
+        start.setText("Start");
         start.setOnClickListener(v -> {
             display.setText("Ready!");
+            start.setText("Again");
             int randomTimeOut = (int) (Math.random()*5000);
             Log.d("timeout", String.valueOf(randomTimeOut));
             new android.os.Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     startTime = System.nanoTime();
+                    isMeasuring = true;
                     display.setText("Now!");
+
                 }
             }, randomTimeOut);});
 
@@ -72,13 +79,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSensorChanged(SensorEvent event) {
                 Log.d("proximity",String.valueOf(event.values[0]));
-                if (event.values[0] < 0.1) {
+                if (event.values[0] < 0.1 && isMeasuring) {
                     endTime = System.nanoTime();
                     double duration = (endTime - startTime) * Math.pow(10,-9);
                     Log.d("start time", String.valueOf(startTime));
                     Log.d("end time", String.valueOf(endTime));
                     Log.d("duration", String.valueOf(duration));
                     display.setText(String.valueOf(duration));
+                    isMeasuring = false;
                 }
             }
             @Override
